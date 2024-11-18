@@ -22,8 +22,14 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented_5"});
+  /*As ISBN does not exist in the phisical directory, a virtual path should be set*/
+  const isbn = req.params.isbn; // Extract the ISBN from the request parameters, define isbn
+  //1_Check if the book exist in booksdb.js/books
+  if(books[isbn]) {
+    res.status(200).json(books[isbn]); //Returns book details as response
+  } else {
+    res.status(404).json({message: "Book not found"});
+  }
  });
   
 // Get book details based on author

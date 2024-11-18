@@ -29,7 +29,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
     }
 });
  
-const PORT =5001;  // Note: use port 5000 for GitHub
+const PORT =5000;  // Note: use port 5000 for GitHub
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
