@@ -22,32 +22,68 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  /*As ISBN does not exist in the phisical directory, a virtual path should be set*/
-  const isbn = req.params.isbn; // Extract the ISBN from the request parameters, define isbn
-  //1_Check if the book exist in booksdb.js/books
-  if(books[isbn]) {
-    res.status(200).json(books[isbn]); //Returns book details as response
-  } else {
-    res.status(404).json({message: "Book not found"});
-  }
+    // Extract the ISBN from request parameters
+    const isbn = req.params.isbn;
+    // Find the book with the matching ISBN
+    const book = Object.values(books).find(book => book.ISBN && book.ISBN.toLowerCase() === isbn.toLowerCase());
+
+    if (book) {
+        // Return the book details as the response
+        res.status(200).json(book);
+    } else {
+        // If no book is found, send a 404 response
+        res.status(404).json({ message: "Book not found" });
+    }
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented_6"});
+  
+    // Extract the author from request parameters
+    const author = req.params.author;
+
+    // Filter books by author
+    const booksByAuthor = Object.values(books).filter(book => book.author.toLowerCase() === author.toLowerCase());
+
+    if (booksByAuthor.length > 0) {
+        // Return all books written by the given author
+        res.status(200).json(booksByAuthor);
+    } else {
+        // If no books by the author are found
+        res.status(404).json({ message: "Author not found" });
+    }
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented_7"});
+  const title = req.params.title;
+  // Find a book with the matching title
+  const book = Object.values(books).find(book => book.title && book.title.toLowerCase() === title.toLowerCase());
+
+  if (book) {
+    // Return the single book object
+    res.status(200).json(book);
+  } else {
+    // If no book is found, return a 404 error
+    res.status(404).json({ message: "Title not found" });
+  }
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented_8"});
+  // Extract ISBN from request parameters
+  const isbn = req.params.isbn;
+
+  // Find the book with the matching ISBN
+  const book = Object.values(books).find(book => book.ISBN && book.ISBN.toLowerCase() === isbn.toLowerCase());
+
+  if (book) {
+    // Return the reviews for the book
+    res.status(200).json(book.reviews || {});
+  } else {
+    // If no book is found, return a 404 error
+    res.status(404).json({ message: "Book not found" });
+  }
 });
 
 module.exports.general = public_users;
