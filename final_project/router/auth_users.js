@@ -92,29 +92,29 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 /*Filter & delete the reviews based on the session username, 
 so that a user can delete only his/her reviews and not other users’*/
 regd_users.delete("/auth/review/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
-  const username = req.session.authorization?.username;
+  const isbn = req.params.isbn; // Extract the ISBN from the request
+  const sessionUsername = req.session.authorization.username; // Extract the session username
 
-  // Check if user is logged in
-  if (!username) {
-    return res.status(403).json({ message: "User not logged in." });
-  }
+  // Find the book that matches the ISBN
+  const book = Object.values(books).find((book) => book.ISBN === isbn);
 
-  // Find the book with the given ISBN
-  const book = books[isbn];
-
+  // If the book is not found
   if (!book) {
-    return res.status(404).json({ message: "Book not found." });
+    return res.status(404).json({ message: `Book with ISBN ${isbn} not found.` });
   }
 
-  // Check if the user has a review for this book
-  if (book.reviews && book.reviews[username]) {
-    delete book.reviews[username]; // Delete the user's review
-    return res.status(200).json({ message: "Review deleted successfully." });
+  // Check if the user's review exists in the reviews object
+  if (book.reviews && book.reviews[sessionUsername]) {
+    // Delete the user's review
+    delete book.reviews[sessionUsername];
+    return res.status(200).json({ message: "Your review has been deleted successfully." });
   } else {
-    return res.status(404).json({ message: "Review not found for the user." });
+    return res.status(404).json({ message: "You have not posted a review for this book." });
   }
 });
+
+
+
 
 
 module.exports.authenticated = regd_users;
