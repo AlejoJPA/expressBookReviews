@@ -5,22 +5,6 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-//let users = []; //empty users array for the new users' registration
-
-/*'doesExist' function will be used in the registration endpoint
-It check if a user with the given name already exist ()
-const doesExist = (username) => {
-    let userswithsamename = users.filter((user) => {
-    return user.username === username;});
-
-    // Return true if any user with the same username is found, otherwise false
-    if(userswithsamename.length > 0){
-        return true;
-    } else {
-        return false
-    }
-}*/
-
 public_users.post("/register", (req,res) => {
   const username = req.body.username;
   const password = req.body.password;
