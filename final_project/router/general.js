@@ -1,9 +1,55 @@
 const express = require('express');
+const axios = require("axios");
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000/";
+
+// Get the book list available in the shop using async-await (task10)
+public_users.get('/async', async (req, res) => {
+    try {
+        const response = await axios.get(`${BASE_URL}`);
+        res.status(200).json({
+            success: true,
+            message: "Books fetched successfully using async-await",
+            books: response.data,
+        });
+    } catch (error) {
+        console.error("Error fetching books:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching books",
+            error: error.message || "Unknown error",
+        });
+    }
+});
+
+// Get book details based on ISBN using async-await (task11)
+public_users.get('/async/isbn/:isbn', async (req, res) => {
+    const { isbn } = req.params;
+
+    try {
+        // Make an HTTP GET request to fetch book details
+        const response = await axios.get(`${BASE_URL}isbn/${isbn}`);
+        
+        // If the response is successful, send the book details
+        res.status(200).json({
+            success: true,
+            message: "Book details fetched successfully using async-await",
+            book: response.data,
+        });
+    } catch (error) {
+        // Handle errors gracefully
+        console.error("Error fetching book details:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching book details",
+            error: error.message || "Unknown error",
+        });
+    }
+});
 
 public_users.post("/register", (req,res) => {
   const username = req.body.username;
@@ -35,6 +81,9 @@ public_users.get('/',function (req, res) {
   res.send(JSON.stringify(books,null,4));
 
 });
+
+
+
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
