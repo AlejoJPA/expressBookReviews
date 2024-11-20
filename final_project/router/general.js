@@ -122,33 +122,34 @@ public_users.post("/register", (req,res) => {
 });
 
 
-
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
-  //return res.status(300).json({message: "Yet to be implemented_4"});
-
   // Send JSON response with formatted books data from booksdb.js
-  res.send(JSON.stringify(books,null,4));
+  //res.send(JSON.stringify(books,null,4));
+
+  // Send the books object directly as part of the response
+    res.status(200).json({
+        books
+    });
 
 });
 
-
-
-
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    // Extract the ISBN from request parameters
-    const isbn = req.params.isbn;
-    // Find the book with the matching ISBN
-    const book = Object.values(books).find(book => book.ISBN && book.ISBN.toLowerCase() === isbn.toLowerCase());
-
-    if (book) {
-        // Return the book details as the response
-        res.status(200).json(book);
+    const { isbn } = req.params;
+    // Attempt to find the book by ISBN
+    const bookByISBN = Object.values(books).find(book => book.ISBN && book.ISBN.toLowerCase() === isbn.toLowerCase());
+    if (bookByISBN) {
+        res.status(200).json(bookByISBN); // Return the book details found by ISBN
     } else {
-        // If no book is found, send a 404 response
-        res.status(404).json({ message: "Book not found" });
+        // Fallback: Try to fetch the book by key
+        const bookByKey = books[isbn]; // ISBN is treated as the key in this case
+
+        if (bookByKey) {
+            res.status(200).json(bookByKey); // Return the book found by key
+        } else {
+            res.status(404).json({ message: "Book not found by ISBN or key" });
+        }
     }
  });
   
