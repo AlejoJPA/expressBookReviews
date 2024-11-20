@@ -153,23 +153,6 @@ public_users.get('/isbn/:isbn',function (req, res) {
     }
  });
   
-/*// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  
-    // Extract the author from request parameters
-    const author = req.params.author;
-
-    // Filter books by author
-    const booksByAuthor = Object.values(books).filter(book => book.author.toLowerCase() === author.toLowerCase());
-
-    if (booksByAuthor.length > 0) {
-        // Return all books written by the given author
-        res.status(200).json(booksByAuthor);
-    } else {
-        // If no books by the author are found
-        res.status(404).json({ message: "Author not found" });
-    }
-});*/
 
 // Get book details based on author
 public_users.get('/author/:author', (req, res) => {
@@ -194,7 +177,7 @@ public_users.get('/author/:author', (req, res) => {
 });
 
 
-// Get all books based on title
+/*// Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   const title = req.params.title;
   // Find a book with the matching title
@@ -207,7 +190,30 @@ public_users.get('/title/:title',function (req, res) {
     // If no book is found, return a 404 error
     res.status(404).json({ message: "Title not found" });
   }
+});*/
+
+public_users.get('/title/:title', (req, res) => {
+    const title = req.params.title.toLowerCase();
+
+    // Filter books by author and restructure the output
+    const booksByATitle = Object.entries(books)
+        .filter(([isbn, book]) => book.title.toLowerCase() === title)
+        .map(([isbn, book]) => ({
+            isbn, // Use the key as the ISBN
+            author: book.author,
+            reviews: book.reviews || {}, // Include reviews or empty object if not present
+        }));
+
+    if (booksByATitle.length > 0) {
+        // Return all books matching the given author with the new format
+        res.status(200).json({booksByATitle});
+    } else {
+        // If no books by the author are found
+        res.status(404).json({ message: "Title not found" });
+    }
 });
+
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
