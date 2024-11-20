@@ -177,21 +177,6 @@ public_users.get('/author/:author', (req, res) => {
 });
 
 
-/*// Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  const title = req.params.title;
-  // Find a book with the matching title
-  const book = Object.values(books).find(book => book.title && book.title.toLowerCase() === title.toLowerCase());
-
-  if (book) {
-    // Return the single book object
-    res.status(200).json(book);
-  } else {
-    // If no book is found, return a 404 error
-    res.status(404).json({ message: "Title not found" });
-  }
-});*/
-
 public_users.get('/title/:title', (req, res) => {
     const title = req.params.title.toLowerCase();
 
@@ -220,8 +205,8 @@ public_users.get('/review/:isbn',function (req, res) {
   // Extract ISBN from request parameters
   const isbn = req.params.isbn;
 
-  // Find the book with the matching ISBN
-  const book = Object.values(books).find(book => book.ISBN && book.ISBN.toLowerCase() === isbn.toLowerCase());
+  // Find the book directly using the key
+  const book = books[isbn];
 
   if (book) {
     // Return the reviews for the book
@@ -230,6 +215,9 @@ public_users.get('/review/:isbn',function (req, res) {
     // If no book is found, return a 404 error
     res.status(404).json({ message: "Book not found" });
   }
+
+  
+
 });
 
 module.exports.general = public_users;
