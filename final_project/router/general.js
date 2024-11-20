@@ -153,7 +153,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     }
  });
   
-// Get book details based on author
+/*// Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   
     // Extract the author from request parameters
@@ -169,7 +169,30 @@ public_users.get('/author/:author',function (req, res) {
         // If no books by the author are found
         res.status(404).json({ message: "Author not found" });
     }
+});*/
+
+// Get book details based on author
+public_users.get('/author/:author', (req, res) => {
+    const author = req.params.author.toLowerCase();
+
+    // Filter books by author and restructure the output
+    const booksByAuthor = Object.entries(books)
+        .filter(([isbn, book]) => book.author.toLowerCase() === author)
+        .map(([isbn, book]) => ({
+            isbn, // Use the key as the ISBN
+            title: book.title,
+            reviews: book.reviews || {}, // Include reviews or empty object if not present
+        }));
+
+    if (booksByAuthor.length > 0) {
+        // Return all books matching the given author with the new format
+        res.status(200).json({booksByAuthor});
+    } else {
+        // If no books by the author are found
+        res.status(404).json({ message: "Author not found" });
+    }
 });
+
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
