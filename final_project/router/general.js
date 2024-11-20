@@ -51,6 +51,57 @@ public_users.get('/async/isbn/:isbn', async (req, res) => {
     }
 });
 
+
+// Get book details based on 'author' using async-await (task12)
+public_users.get('/async/author/:author', async (req, res) => {
+    const { author } = req.params;
+
+    try {
+        // Make an HTTP GET request to fetch book details
+        const response = await axios.get(`${BASE_URL}author/${author}`);
+        
+        // If the response is successful, send the book details
+        res.status(200).json({
+            success: true,
+            message: "Book details fetched successfully using async-await",
+            book: response.data,
+        });
+    } catch (error) {
+        // Handle errors gracefully
+        console.error("Error fetching book details:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching book details",
+            error: error.message || "Unknown error",
+        });
+    }
+});
+
+// Get book details based on 'title' using async-await (task13)
+public_users.get('/async/title/:title', async (req, res) => {
+    const { title } = req.params;
+
+    try {
+        // Make an HTTP GET request to fetch book details
+        const response = await axios.get(`${BASE_URL}title/${title}`);
+        
+        // If the response is successful, send the book details
+        res.status(200).json({
+            success: true,
+            message: "Book details fetched successfully using async-await",
+            book: response.data,
+        });
+    } catch (error) {
+        // Handle errors gracefully
+        console.error("Error fetching book details:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching book details",
+            error: error.message || "Unknown error",
+        });
+    }
+});
+
 public_users.post("/register", (req,res) => {
   const username = req.body.username;
   const password = req.body.password;
