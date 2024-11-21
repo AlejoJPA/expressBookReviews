@@ -52,7 +52,7 @@ regd_users.post("/login", (req,res) => {
 
         // Store access token and username in session
         req.session.authorization = {accessToken, username}
-        return res.status(200).send("User successfully logged in");
+        return res.status(200).send("Customer successfully logged in");
 
     }else{
         return res.status(208).json({ message: "Invalid Login. Check username and password" });
@@ -96,7 +96,10 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   const sessionUsername = req.session.authorization.username; // Extract the session username
 
   // Find the book that matches the ISBN
-  const book = Object.values(books).find((book) => book.ISBN === isbn);
+  //const book = Object.values(books).find((book) => book.ISBN === isbn);
+
+  // Find the book directly using the key
+    const book = books[isbn];
 
   // If the book is not found
   if (!book) {
@@ -107,7 +110,8 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
   if (book.reviews && book.reviews[sessionUsername]) {
     // Delete the user's review
     delete book.reviews[sessionUsername];
-    return res.status(200).json({ message: "Your review has been deleted successfully." });
+    //return res.status(200).json({ message: "Your review has been deleted successfully." });
+    return res.status(200).send(`Reviews for the ISBN ${isbn} posted by the user ${sessionUsername} deteted.`);
   } else {
     return res.status(404).json({ message: "You have not posted a review for this book." });
   }
