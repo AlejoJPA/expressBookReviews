@@ -120,8 +120,6 @@ public_users.get('/review/:isbn',function (req, res) {
     res.status(404).json({ message: "Book not found" });
   }
 
-  
-
 });
 
 // Get the book list available in the shop using async-await (task10)
